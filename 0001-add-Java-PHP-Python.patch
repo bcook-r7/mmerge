@@ -1,0 +1,179 @@
+From fb0c8bf7ed12f58b54aad49ef2406ae5e8c49ada Mon Sep 17 00:00:00 2001
+From: Brent Cook <bcook@rapid7.com>
+Date: Thu, 12 Feb 2015 17:07:25 -0600
+Subject: [PATCH] add Java / PHP / Python
+
+---
+ gem/README.md                | 14 +++++++----
+ gem/Rakefile                 | 60 +++++++++++++++++++++++++++++++++++++++-----
+ gem/meterpreter_bins.gemspec |  2 +-
+ 3 files changed, 64 insertions(+), 12 deletions(-)
+
+diff --git a/gem/README.md b/gem/README.md
+index 5554c33..7c4e790 100644
+--- a/gem/README.md
++++ b/gem/README.md
+@@ -1,13 +1,13 @@
+ # Meterpreter Binaries
+ 
+ This gem is a Metasploit-specific gem that contains all of the
+-compiled binaries for the Meterpreter payload. This is made up of:
++Meterpreter payloads. This is made up of:
+ 
+ * Windows DLLs
+ * POSIX LSOs
+ * POSIX BIN
+-
+-The other files have been left alone for now.
++* Java Classes
++* PHP/Python Scripts
+ 
+ ## Installation
+ 
+@@ -20,8 +20,12 @@ download and install Metasploit itself.
+ To build the gem:
+ 
+ 1. Update the version number in `lib/meterpreter_bins/version.rb`
+-1. Run `rake win_prep` to build on Windows or `rake posix_prep` to build
+-   on Linux.
++1. Run:
++  - `rake win_prep` to build on Windows
++  - `rake posix_prep` to build on Linux
++  - `rake java_prep` to build Java files
++  - `rake python_prep` and `rake php_prep` to copy the latest PHP/Python
++    meterpreter files into place
+ 1. Binaries will be built in the `meterpreter` folder.
+ 1. Run `rake build` to generate the new gem file using content in
+    meterpreter folder.
+diff --git a/gem/Rakefile b/gem/Rakefile
+index ef833ea..bfdb5e3 100644
+--- a/gem/Rakefile
++++ b/gem/Rakefile
+@@ -1,14 +1,17 @@
+ require "bundler/gem_tasks"
+ require "shell"
+ 
+-make_folder = "../meterpreter/"
++c_source = "../c/meterpreter/"
++java_source = "../java/"
++php_source = "../php/meterpreter/"
++python_source = "../python/meterpreter/"
+ target_folder = "./meterpreter"
+ 
+ platform_config = {
+   :windows => {
+     :sources => [
+-      "../meterpreter/output/x64",
+-      "../meterpreter/output/x86"
++      "../c/meterpreter/output/x64",
++      "../c/meterpreter/output/x86"
+     ],
+     :extensions => [
+       "dll"
+@@ -16,11 +19,27 @@ platform_config = {
+   },
+   :posix => {
+     :sources => [
+-      "../meterpreter/data/meterpreter"
++      "../c/meterpreter/data/meterpreter"
+     ],
+     :extensions => [
+       "lso", "bin"
+     ]
++  },
++  :php => {
++    :sources => [
++      "../php/meterpreter"
++    ],
++    :extensions => [
++      "php"
++    ]
++  },
++  :python => {
++    :sources => [
++      "../python/meterpreter"
++    ],
++    :extensions => [
++      "py"
++    ]
+   }
+ }
+ 
+@@ -41,17 +60,23 @@ task :create_dir do
+ end
+ 
+ task :win_compile do
+-  Dir.chdir(make_folder) do
++  Dir.chdir(c_source) do
+     system('cmd.exe /c make.bat')
+   end
+ end
+ 
+ task :posix_compile do
+-  Dir.chdir(make_folder) do
++  Dir.chdir(c_source) do
+     system('make clean && make')
+   end
+ end
+ 
++task :java_compile do
++  Dir.chdir(java_source) do
++    system('mvn package -Ddeploy.path=output -Dandroid.release=true -P deploy')
++  end
++end
++
+ task :win_copy do
+   copy_files(platform_config[:windows], target_folder)
+ end
+@@ -60,12 +85,35 @@ task :posix_copy do
+   copy_files(platform_config[:posix], target_folder)
+ end
+ 
++task :java_copy do
++  dest = File.join(target_folder, 'java')
++  FileUtils.remove_entry_secure(dest, :force => true)
++  FileUtils.cp_r('../java/output', File.join(target_folder, 'java'))
++end
++
++task :php_copy do
++  copy_files(platform_config[:php], target_folder)
++end
++
++task :python_copy do
++  copy_files(platform_config[:python], target_folder)
++end
++
+ task :win_prep => [:create_dir, :win_compile, :win_copy] do
+ end
+ 
+ task :posix_prep => [:create_dir, :posix_compile, :posix_copy] do
+ end
+ 
++task :java_prep => [:create_dir, :java_compile, :java_copy] do
++end
++
++task :php_prep => [:create_dir, :php_copy] do
++end
++
++task :python_prep => [:create_dir, :python_copy] do
++end
++
+ # Override tag_version in bundler-#.#.#/lib/bundler/gem_helper.rb to force signed tags
+ module Bundler
+   class GemHelper
+diff --git a/gem/meterpreter_bins.gemspec b/gem/meterpreter_bins.gemspec
+index 7f28875..4a758d3 100644
+--- a/gem/meterpreter_bins.gemspec
++++ b/gem/meterpreter_bins.gemspec
+@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
+   spec.license       = '3-clause (or "modified") BSD'
+ 
+   spec.files         = `git ls-files`.split("\n")
+-  spec.files        += Dir['meterpreter/*']
++  spec.files        += Dir['meterpreter/**/*']
+   spec.executables   = []
+   spec.require_paths = ['lib']
+ 
+-- 
+2.3.0
+
