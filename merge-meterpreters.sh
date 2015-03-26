@@ -133,6 +133,9 @@ git init $DST
   sed -e "s/\.\.\\\pssdk/\.\.\\\.\.\\\.\.\\\pssdk/" -i "" \
     c/meterpreter/make.bat c/meterpreter/workspace/ext_server_sniffer/ext_server_sniffer.vcxproj
   git commit . -m "Adjust submodule and pssdk paths"
+  cp $CWD/README.md .
+  git add README.md
+  git commit . -m "Add README"
 
   git remote add github git@github.com:bcook-r7/metasploit-payloads.git
   git push -f github --mirror
