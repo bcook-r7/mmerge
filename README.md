@@ -10,6 +10,6 @@ This is a new unified repository for different Metasploit Framework payloads, wh
 
 See the individual directories for meterpreter-specific README, build instructions and license details.
 
-  [csource]: https://github.com/rapid7/metasploit-payloads
-  [javasource]: https://github.com/rapid7/metasploit-payloads
+  [csource]: https://github.com/rapid7/meterpreter
+  [javasource]: https://github.com/rapid7/metasploit-javapayload
   [frameworksource]: https://github.com/rapid7/metasploit-framework/tree/master/data/meterpreter
