@@ -11,18 +11,19 @@ CURRENT_PHP=$WD/meterpreter_php
 CURRENT_PYTHON=$WD/meterpreter_python
 PREHISTORY_JAVA=$WD/prehistory_java
 CURRENT_JAVA=$WD/meterpreter_java
-CURRENT_BINS=$WD/meterpreter_bins
+CURRENT_GEM=$WD/metasploit-payloads-gem
 
 (cd clean/metasploit-framework; git pull --rebase)
 (cd clean/meterpreter; git pull --rebase)
 (cd clean/metasploit-javapayload; git pull --rebase)
+(cd clean/metasploit-payloads-gem; git pull --rebase)
 
 rm -fr $WD
 mkdir -p $WD
 
-rm -fr $CURRENT_BINS
-cp -a clean/meterpreter_bins $CURRENT_BINS
-(cd $CURRENT_BINS
+rm -fr $CURRENT_GEM
+cp -a clean/metasploit-payloads-gem $CURRENT_GEM
+(cd $CURRENT_GEM
    git filter-branch -f --index-filter \
 	   'git ls-files -s | gsed "s-\t\"*-&gem/-" |
 		   GIT_INDEX_FILE="$GIT_INDEX_FILE.new" \
@@ -117,12 +118,12 @@ mkdir -p $DST
 git init $DST
 (
   cd $DST
-  git remote add -f current_bins $CURRENT_BINS
+  git remote add -f current_gem $CURRENT_GEM
   git remote add -f current_c $CURRENT_C
   git remote add -f current_java $CURRENT_JAVA
   git remote add -f current_php $CURRENT_PHP
   git remote add -f current_python $CURRENT_PYTHON
-  git merge current_bins/master
+  git merge current_gem/master
   git merge current_c/master
   git merge current_java/master
   git merge current_php/master
@@ -132,6 +133,8 @@ git init $DST
   sed -e "s/\.\.\\\pssdk/\.\.\\\.\.\\\.\.\\\pssdk/" -i "" \
     c/meterpreter/make.bat c/meterpreter/workspace/ext_server_sniffer/ext_server_sniffer.vcxproj
   git commit . -m "Adjust submodule and pssdk paths"
-  patch -p1 < $CWD/0001-add-Java-PHP-Python.patch
-  git commit . -m "Add Java / PHP / Python to the gem"
+
+  git remote add github git@github.com:bcook-r7/metasploit-payloads.git
+  git push -f github --mirror
 )
+
