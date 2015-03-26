@@ -48,3 +48,8 @@ ENV PATH $PATH:$ANDROID_HOME/platform-tools
 ENV PATH $PATH:$ANDROID_NDK_HOME
 
 RUN apt-get clean
+
+ENV JENKINS_HOME /var/jenkins_home
+RUN useradd -d "$JENKINS_HOME" -u 1001 -m -s /bin/sh jenkins
+VOLUME "$JENKINS_HOME"
+RUN chown -R jenkins "$JENKINS_HOME"
