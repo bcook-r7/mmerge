@@ -1,10 +1,11 @@
 # To build the dev environment.
 # docker build -t meterpreter .
 
-FROM ubuntu:14.04
+FROM ubuntu:14.04.2
 MAINTAINER Brent Cook <bcook@rapid7.com> (@busterbcook)
 
 RUN apt-get update
+RUN apt-get dist-upgrade -y
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -16,7 +17,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get install -y bison flex gcc gcc-multilib jam make wget
 
 # Java requirements
-RUN apt-get install -y maven
+RUN apt-get install -y maven openjdk-7-jdk
 
 # Android sdk
 #RUN wget http://dl.google.com/android/android-sdk_r24-linux.tgz
@@ -37,6 +38,8 @@ RUN mv /usr/local/android-ndk-r9d /usr/local/android-ndk
 #RUN chmod 755 /tmp/android-ndk-r10d-linux-x86_64.bin
 #RUN cd /tmp && ./android-ndk-r10d-linux-x86_64.bin
 #RUN mv android-ndk-r10d android-ndk /opt && rm android-ndk-r10d-linux-x86_64.bin
+
+RUN apt-get install -y ruby rake bundler git
 
 ENV ANDROID_HOME /usr/local/android-sdk
 ENV ANDROID_NDK_HOME /usr/local/android-ndk
