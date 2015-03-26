@@ -123,21 +123,21 @@ git init $DST
   git remote add -f current_java $CURRENT_JAVA
   git remote add -f current_php $CURRENT_PHP
   git remote add -f current_python $CURRENT_PYTHON
-  git merge current_gem/master
-  git merge current_c/master
-  git merge current_java/master
-  git merge current_php/master
-  git merge current_python/master
+  git merge -S current_gem/master
+  git merge -S current_c/master
+  git merge -S current_java/master
+  git merge -S current_php/master
+  git merge -S current_python/master
   git mv c/meterpreter/.gitmodules .
   cp $CWD/gitmodules .gitmodules
   sed -e "s/\.\.\\\pssdk/\.\.\\\.\.\\\.\.\\\pssdk/" -i "" \
     c/meterpreter/make.bat c/meterpreter/workspace/ext_server_sniffer/ext_server_sniffer.vcxproj
-  git commit . -m "Adjust submodule and pssdk paths"
+  git commit -S . -m "Adjust submodule and pssdk paths"
   cp $CWD/README.md .
   git add README.md
-  git commit . -m "Add README"
+  git commit -S . -m "Add README"
 
-  git remote add github git@github.com:bcook-r7/metasploit-payloads.git
+  git remote add github git@github.com:rapid7/metasploit-payloads.git
   git push -f github --mirror
 )
 
