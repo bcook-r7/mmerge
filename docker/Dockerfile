@@ -47,6 +47,12 @@ ENV PATH $PATH:$ANDROID_HOME/tools
 ENV PATH $PATH:$ANDROID_HOME/platform-tools
 ENV PATH $PATH:$ANDROID_NDK_HOME
 
+RUN apt-get -y install software-properties-common
+RUN dpkg --add-architecture i386
+RUN apt-add-repository ppa:ubuntu-wine
+RUN apt-get update
+RUN apt-get -y install wine php5-cli python python3
+
 RUN apt-get clean
 
 ENV JENKINS_HOME /var/jenkins_home
