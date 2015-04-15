@@ -77,7 +77,7 @@ cp -a clean/meterpreter $CURRENT_C
 			   git update-index --index-info &&
 	    mv "$GIT_INDEX_FILE.new" "$GIT_INDEX_FILE" || true' HEAD
   git fetch $PREHISTORY_C master:prehistory_c
-  echo 3b16aa0be5570eec2d7a586bb2925dadb2251bf2 05981df5685e578fea0ae61f51dd8315f30f81cb > .git/info/grafts
+  echo `git log --pretty=oneline --reverse|head -1|cut -f 1 -d ' '` `git log --pretty=oneline prehistory_c |head -1|cut -f 1 -d ' '` > .git/info/grafts
   git fast-export --signed-tags=warn --all > ../export
 )
 rm -fr $CURRENT_C
