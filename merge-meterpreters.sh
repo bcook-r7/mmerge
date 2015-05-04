@@ -113,6 +113,8 @@ mkdir $CURRENT_JAVA
  git fast-import < ../export
 )
 
+SIGN=-S
+
 rm -fr $DST
 mkdir -p $DST
 git init $DST
@@ -123,19 +125,23 @@ git init $DST
   git remote add -f current_java $CURRENT_JAVA
   git remote add -f current_php $CURRENT_PHP
   git remote add -f current_python $CURRENT_PYTHON
-  git merge -S current_gem/master
-  git merge -S current_c/master
-  git merge -S current_java/master
-  git merge -S current_php/master
-  git merge -S current_python/master
+  git merge $SIGN current_gem/master
+  git merge $SIGN current_c/master
+  git merge $SIGN current_java/master
+  git merge $SIGN current_php/master
+  git merge $SIGN current_python/master
   git mv c/meterpreter/.gitmodules .
   cp $CWD/gitmodules .gitmodules
   sed -e "s/\.\.\\\pssdk/\.\.\\\.\.\\\.\.\\\pssdk/" -i "" \
     c/meterpreter/make.bat c/meterpreter/workspace/ext_server_sniffer/ext_server_sniffer.vcxproj
-  git commit -S . -m "Adjust submodule and pssdk paths"
-  cp $CWD/README.md .
-  git add README.md
-  git commit -S . -m "Add README"
+  git commit $SIGN . -m "Adjust submodule and pssdk paths"
+  patch -p1 < $CWD/0001-adjust-java-install-paths.patch
+  git commit $SIGN . -m "Adjust java install paths"
+  patch -p1 < $CWD/0002-adjust-posix-install-paths.patch
+  git commit $SIGN . -m "Adjust posix install paths"
+  cp $CWD/README.md $CWD/Makefile .
+  git add README.md Makefile
+  git commit $SIGN . -m "Add top-level README and Makefile"
 
   git remote add github git@github.com:rapid7/metasploit-payloads.git
   git push -f github --mirror

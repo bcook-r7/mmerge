@@ -1,0 +1,25 @@
+From a55a2ee2469794c4e1c91d3fb42df386537ffe66 Mon Sep 17 00:00:00 2001
+From: Brent Cook <bcook@rapid7.com>
+Date: Tue, 28 Apr 2015 05:38:43 -0500
+Subject: [PATCH 2/2] adjust posix install paths
+
+---
+ c/meterpreter/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/c/meterpreter/Makefile b/c/meterpreter/Makefile
+index 8813425..87c260a 100644
+--- a/c/meterpreter/Makefile
++++ b/c/meterpreter/Makefile
+@@ -2,7 +2,7 @@
+ # Used by 'install' target. Change this to wherever your framework checkout is.
+ # Doesn't have to be development. Should point to the base directory where
+ # msfconsole lives.
+-framework_dir = ../metasploit-framework/
++framework_dir = ../../../metasploit-framework/
+ 
+ # Change me if you want to build openssl and libpcap somewhere else
+ build_tmp = posix-meterp-build-tmp
+-- 
+2.3.6
+
