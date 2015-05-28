@@ -125,11 +125,11 @@ git init $DST
   git remote add -f current_java $CURRENT_JAVA
   git remote add -f current_php $CURRENT_PHP
   git remote add -f current_python $CURRENT_PYTHON
-  git merge $SIGN current_gem/master
-  git merge $SIGN current_c/master
-  git merge $SIGN current_java/master
-  git merge $SIGN current_php/master
-  git merge $SIGN current_python/master
+  git merge $SIGN -m "Merged gem" current_gem/master
+  git merge $SIGN -m "Merged c" current_c/master
+  git merge $SIGN -m "Merged java" current_java/master
+  git merge $SIGN -m "Merged php" current_php/master
+  git merge $SIGN -m "Merged python" current_python/master
   git mv c/meterpreter/.gitmodules .
   cp $CWD/gitmodules .gitmodules
   sed -e "s/\.\.\\\pssdk/\.\.\\\.\.\\\.\.\\\pssdk/" -i "" \
